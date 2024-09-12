@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Page</title>
+    <link rel="stylesheet" href="/styles/sales.css">
+    <link rel="stylesheet" href="/styles/admin.css" />
+    <link rel="stylesheet" href="/styles/procurement.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-content">
+                   <img src="/images/Ellipse13.png" alt="dashboard icon" />
+                    <h1><a href="">Happy Hoe Grocery</a></h1>
+                </div>
+            </div>
+            <div class="sidebar-middle">
+                <div class="sidebar-content">
+                    <img src="/assets/home-variant.svg" alt="home" />
+                    <h2><a href="/">Home</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/shield-check.svg" alt="view sales" />
+                    <h2><a href="/viewSales">View Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+        <img src="/assets/chart-bar.jpg" alt="reports" />
+        <h2><a href="/reportspage">Reports</a></h2>
+    </div>
+            </div>
+           
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div>
+                        <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                        <h2><strong>Sales Page</strong></h2>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
+                        <p><strong>Welcome, {{user.username}}!</strong></p>
+                        <p>Branch: {{user.branch}}</p>
+                    </div>
+                    <div class="actions">
+                        <button type="button" onclick="signOut()">Sign out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="sales-content">
+                <div class="form-container">
+                    <h1>SALES</h1>
+                    <form action="/salesPage" method="POST">
+                        <div class="sales-grid">
+                            <div class="form-group">
+                                <input class="form-input" type="text" id="buyerName" minlength="2" placeholder="Buyer Name" name="buyerName" required>
+                                <input class="form-input" type="text" id="salesAgentName" placeholder="Sales Agent Name" name="salesAgentName" value="{{user.username}}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="saleDate">Sale Date:</label>
+                                <input class="form-input" type="date" id="saleDate" name="saleDate" required>
+                                <select class="form-input" id="produceName" name="produceName" required>
+                                    <option value="">Select Product</option>
+                                    {{#each products}}
+                                        <option value="{{this.name}}" data-tonnage="{{this.tonnage}}">{{this.name}} ({{this.tonnage}} tonnes available)</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-input" type="number" id="tonnage" placeholder="Tonnage" name="tonnage" required min="0" step="0.01">
+                                <input class="form-input" type="number" id="amountPaid" placeholder="Amount Paid (UGX)" name="amountPaid" required min="10000" step="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="saleType">Sale Type:</label>
+                            <select class="form-input" id="saleType" name="saleType" required>
+                                <option value="cash">Cash</option>
+                                <option value="credit">Credit</option>
+                            </select>
+                        </div>
+                        <div id="creditFields" style="display: none;">
+                            <div class="form-group">
+                                <input class="form-input" type="number" id="amountDue" placeholder="Amount Due (UGX)" name="amountDue" min="10000" step="1">
+                                <input class="form-input" type="tel" id="contacts" placeholder="Contacts" name="contacts">
+                            </div>
+                            <div class="form-group">
+                                <label for="dateOfDispatch">Date of Dispatch:</label>
+                                <input class="form-input" type="date" id="dateOfDispatch" placeholder="Date of Dispatch" name="dateOfDispatch">
+                                <label for="dueDate">Due Date:</label>
+                                <input class="form-input" type="date" id="dueDate" placeholder="Due Date" name="dueDate">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-input" type="text" id="location" placeholder="Location" name="location" minlength="2" required>
+                                <input class="form-input" type="text" id="nationalId" placeholder="National ID" name="nationalId" required 
+                                       pattern="^(CM|CF|PM)[A-Z0-9]{12}$" 
+                                       minlength="14" maxlength="14"
+                                       title="National ID must be 14 characters long and start with CM, CF, or PM"
+                                       oninput="this.value = this.value.toUpperCase()">
+                            </div>
+                        </div>
+                        <div class="buttons">
+                            <button type="button" class="cancel-btn">CANCEL</button>
+                            <button type="submit" class="save-btn">SAVE</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="salePopup" class="popup" style="display: none;">
+        <div class="popup-content">
+            <span class="close-icon" onclick="closeSalePopup()">&times;</span>
+            <div id="saleDetails"></div>
+            <div class="popup-buttons">
+                <button onclick="printSale()" class="print-btn">Print Sale</button>
+                <button onclick="closeSalePopup()" class="close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                fetch('/signout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Failed to sign out. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while signing out. Please try again.');
+                });
+            }
+        }
+
+        document.getElementById('produceName').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const availableTonnage = parseFloat(selectedOption.dataset.tonnage);
+            const tonnageInput = document.getElementById('tonnage');
+            tonnageInput.max = availableTonnage;
+            tonnageInput.placeholder = `Tonnage (max ${availableTonnage})`;
+        });
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            console.log('Sending sale data:', data);  // Add this line
+
+            fetch('/salesPage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSalePopup(data.sale);
+                    form.reset();
+                } else {
+                    alert('Failed to save the sale. ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the sale. Please try again.');
+            });
+        });
+
+        function showSalePopup(sale) {
+            const popup = document.getElementById('salePopup');
+            const detailsDiv = document.getElementById('saleDetails');
+            
+            let detailsHTML = `
+                <div class="receipt-header">
+                    <img src="/images/Ellipse13.png" alt="Happy Hoe Grocery Logo" class="receipt-logo">
+                    <h1>Happy Hoe Grocery</h1>
+                    <p>Your Trusted Grain Supplier</p>
+                </div>
+                <div class="receipt-body">
+                    <h2>Sale Receipt</h2>
+                    <p><strong>Receipt No:</strong> ${sale._id.substring(0, 8).toUpperCase()}</p>
+                    <p><strong>Date:</strong> ${new Date(sale.saleDate).toLocaleString()}</p>
+                    <hr>
+                    <p><strong>Buyer Name:</strong> ${sale.buyerName}</p>
+                    <p><strong>Sales Agent:</strong> ${sale.salesAgentName}</p>
+                    <p><strong>Product:</strong> ${sale.produceName}</p>
+                    <p><strong>Quantity:</strong> ${sale.tonnage} tonnes</p>
+                    <p><strong>Sale Type:</strong> ${sale.saleType.charAt(0).toUpperCase() + sale.saleType.slice(1)}</p>
+                    ${sale.saleType === 'cash' 
+                        ? `<p><strong>Amount Paid:</strong> ${sale.amountPaid.toLocaleString()} UGX</p>`
+                        : `<p><strong>Amount Due:</strong> ${sale.amountDue.toLocaleString()} UGX</p>
+                           <p><strong>Due Date:</strong> ${new Date(sale.dueDate).toLocaleDateString()}</p>
+                           <p><strong>Contacts:</strong> ${sale.contacts}</p>
+                           <p><strong>Date of Dispatch:</strong> ${new Date(sale.dateOfDispatch).toLocaleDateString()}</p>
+                           <p><strong>Location:</strong> ${sale.location}</p>
+                           <p><strong>National ID:</strong> ${sale.nationalId}</p>`
+                    }
+                    <hr>
+                    <p class="thank-you">Thank you for your business!</p>
+                </div>
+            `;
+
+            detailsDiv.innerHTML = detailsHTML;
+            popup.style.display = 'flex';
+        }
+
+        function closeSalePopup() {
+            document.getElementById('salePopup').style.display = 'none';
+        }
+
+        function printSale() {
+            const printContent = document.getElementById('saleDetails').innerHTML;
+            const originalContent = document.body.innerHTML;
+            const printStyles = `
+                <style>
+                    body { font-family: 'Courier New', Courier, monospace; }
+                    .receipt-header { text-align: center; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
+                    .receipt-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; }
+                    .receipt-header h1 { color: #4CAF50; margin-bottom: 5px; }
+                    .receipt-header p { color: #666; font-style: italic; }
+                    .receipt-body h2 { text-align: center; margin-bottom: 15px; color: #333; }
+                    .receipt-body p { margin-bottom: 5px; font-size: 14px; }
+                    .receipt-body hr { border: none; border-top: 1px dashed #999; margin: 15px 0; }
+                    .thank-you { text-align: center; font-weight: bold; margin-top: 20px; font-size: 16px !important; }
+                </style>
+            `;
+            document.body.innerHTML = printStyles + printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+        }
+
+        document.getElementById('amountPaid').addEventListener('input', function() {
+            if (this.value.length < 5) {
+                this.setCustomValidity('Amount must be at least 10,000 UGX');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        document.getElementById('saleType').addEventListener('change', function() {
+            const creditFields = document.getElementById('creditFields');
+            if (this.value === 'credit') {
+                creditFields.style.display = 'block';
+                document.getElementById('amountPaid').required = false;
+                document.getElementById('amountDue').required = true;
+                document.getElementById('contacts').required = true;
+                document.getElementById('dateOfDispatch').required = true;
+                document.getElementById('dueDate').required = true;
+                document.getElementById('location').required = true;
+                document.getElementById('nationalId').required = true;
+            } else {
+                creditFields.style.display = 'none';
+                document.getElementById('amountPaid').required = true;
+                document.getElementById('amountDue').required = false;
+                document.getElementById('contacts').required = false;
+                document.getElementById('dateOfDispatch').required = false;
+                document.getElementById('dueDate').required = false;
+                document.getElementById('location').required = false;
+                document.getElementById('nationalId').required = false;
+            }
+        });
+        document.getElementById('saleType').addEventListener('change', function() {
+    const creditFields = document.getElementById('creditFields');
+    if (this.value === 'credit') {
+        creditFields.style.display = 'block';
+        // ... existing code ...
+        
+        // Scroll to the bottom of the sales content
+        setTimeout(() => {
+            document.querySelector('.sales-content').scrollTop = document.querySelector('.sales-content').scrollHeight;
+        }, 100);
+    } else {
+        creditFields.style.display = 'none';
+        // ... existing code ...
+    }
+});
+
+document.getElementById('location').addEventListener('input', function() {
+    if (this.value.length < 2) {
+        this.setCustomValidity('Location must be at least 2 characters long');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+    </script>
+
+    <style>
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .popup-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 10000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .receipt-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .receipt-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .receipt-header h1 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        .receipt-header p {
+            color: #666;
+            font-style: italic;
+        }
+        .receipt-body {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .receipt-body h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .receipt-body p {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .receipt-body hr {
+            border: none;
+            border-top: 1px dashed #999;
+            margin: 15px 0;
+        }
+        .thank-you {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 16px !important;
+        }
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .popup-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .print-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .print-btn:hover {
+            background-color: #45a049;
+        }
+        .close-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .close-btn:hover {
+            background-color: #da190b;
+        }
+        .close-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+    </style>
+</body>
+
+</html>
+

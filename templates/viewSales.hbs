@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Sales</title>
+    <link rel="stylesheet" href="/styles/admin.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-content">
+                    <img src="/images/Ellipse13.png" alt="dashboard icon" />
+                    <h1><a href="">Happy Hoe Grocery</a></h1>
+                </div>
+            </div>
+            <div class="sidebar-middle">
+                <div class="sidebar-content">
+                    <img src="/assets/home-variant.svg" alt="home" />
+                    <h2><a href="/">Home</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/shield-check.svg" alt="view sales" />
+                    <h2><a href="/viewSales">View Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+        <img src="/assets/chart-bar.jpg" alt="reports" />
+        <h2><a href="/reportspage">Reports</a></h2>
+    </div>
+            </div>
+            
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div>
+                        <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                        <h2><strong>View Sales</strong></h2>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
+                        <p><strong>Welcome, {{user.username}}!</strong></p>
+                        <p>Branch: {{user.branch}}</p>
+                    </div>
+                    <div class="actions">
+                        <button type="button" onclick="signOut()">Sign out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="sales-section">
+                <h2>All Sales</h2>
+                <div class="table-container">
+                    <table id="salesTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Buyer Name</th>
+                                <th>Sales Agent</th>
+                                <th>Sale Date</th>
+                                <th>Produce Name</th>
+                                <th>Tonnage</th>
+                                <th>Sale Type</th>
+                                <th>Amount Paid</th>
+                                <th>Amount Due</th>
+                                <th>Contacts</th>
+                                <th>Date of Dispatch</th>
+                                <th>Due Date</th>
+                                <th>Location</th>
+                                <th>National ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sales data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this modal for editing sales -->
+    <div id="editSaleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditSaleModal()">&times;</span>
+            <h2>Edit Sale</h2>
+            <form id="editSaleForm">
+                <input type="hidden" id="editSaleId">
+                <div class="form-group">
+                    <label for="editBuyerName">Buyer Name:</label>
+                    <input type="text" id="editBuyerName" name="buyerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSalesAgentName">Sales Agent:</label>
+                    <input type="text" id="editSalesAgentName" name="salesAgentName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSaleDate">Sale Date:</label>
+                    <input type="date" id="editSaleDate" name="saleDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProduceName">Produce Name:</label>
+                    <input type="text" id="editProduceName" name="produceName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTonnage">Tonnage:</label>
+                    <input type="number" id="editTonnage" name="tonnage" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSaleType">Sale Type:</label>
+                    <select id="editSaleType" name="saleType" required>
+                        <option value="cash">Cash</option>
+                        <option value="credit">Credit</option>
+                    </select>
+                </div>
+                <div id="editCashFields">
+                    <div class="form-group">
+                        <label for="editAmountPaid">Amount Paid:</label>
+                        <input type="number" id="editAmountPaid" name="amountPaid" min="10000">
+                    </div>
+                </div>
+                <div id="editCreditFields" style="display:none;">
+                    <div class="form-group">
+                        <label for="editAmountDue">Amount Due:</label>
+                        <input type="number" id="editAmountDue" name="amountDue">
+                    </div>
+                    <div class="form-group">
+                        <label for="editContacts">Contacts:</label>
+                        <input type="text" id="editContacts" name="contacts">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDateOfDispatch">Date of Dispatch:</label>
+                        <input type="date" id="editDateOfDispatch" name="dateOfDispatch">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDueDate">Due Date:</label>
+                        <input type="date" id="editDueDate" name="dueDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="editLocation">Location:</label>
+                        <input type="text" id="editLocation" name="location">
+                    </div>
+                    <div class="form-group">
+                        <label for="editNationalId">National ID:</label>
+                        <input type="text" id="editNationalId" name="nationalId">
+                    </div>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#salesTable').DataTable({
+                "ajax": {
+                    "url": "/fetchAllSales",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "buyerName" },
+                    { "data": "salesAgentName" },
+                    { "data": "saleDate", "render": function(data) { return data ? new Date(data).toLocaleDateString() : ''; } },
+                    { "data": "produceName" },
+                    { "data": "tonnage" },
+                    { 
+                        "data": "saleType",
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "amountPaid",
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "amountDue",
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "contacts",
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "dateOfDispatch", 
+                        "render": function(data) { return data ? new Date(data).toLocaleDateString() : 'N/A'; },
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "dueDate", 
+                        "render": function(data) { return data ? new Date(data).toLocaleDateString() : 'N/A'; },
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "location",
+                        "defaultContent": "N/A"
+                    },
+                    { 
+                        "data": "nationalId",
+                        "defaultContent": "N/A"
+                    },
+                    {
+                        "data": null,
+                        "render": function(data, type, row) {
+                            return "<button class='edit-btn' onclick='openEditSaleModal(" + JSON.stringify(row) + ")'>Edit</button>";
+                        }
+                    }
+                ]
+            });
+        });
+
+        function openEditSaleModal(data) {
+            document.getElementById('editSaleId').value = data._id;
+            document.getElementById('editBuyerName').value = data.buyerName;
+            document.getElementById('editSalesAgentName').value = data.salesAgentName;
+            document.getElementById('editSaleDate').value = new Date(data.saleDate).toISOString().split('T')[0];
+            document.getElementById('editProduceName').value = data.produceName;
+            document.getElementById('editTonnage').value = data.tonnage;
+            document.getElementById('editSaleType').value = data.saleType;
+
+            // Toggle visibility of cash/credit fields
+            if (data.saleType === 'cash') {
+                document.getElementById('editCashFields').style.display = 'block';
+                document.getElementById('editCreditFields').style.display = 'none';
+                document.getElementById('editAmountPaid').value = data.amountPaid;
+            } else {
+                document.getElementById('editCashFields').style.display = 'none';
+                document.getElementById('editCreditFields').style.display = 'block';
+                document.getElementById('editAmountDue').value = data.amountDue;
+                document.getElementById('editContacts').value = data.contacts;
+                document.getElementById('editDateOfDispatch').value = data.dateOfDispatch ? new Date(data.dateOfDispatch).toISOString().split('T')[0] : '';
+                document.getElementById('editDueDate').value = data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : '';
+                document.getElementById('editLocation').value = data.location;
+                document.getElementById('editNationalId').value = data.nationalId;
+            }
+
+            document.getElementById('editSaleModal').style.display = 'block';
+        }
+
+        document.getElementById('editSaleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            var data = Object.fromEntries(formData.entries());
+            data._id = document.getElementById('editSaleId').value;
+
+            fetch('/updateSale', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Sale updated successfully!');
+                    document.getElementById('editSaleModal').style.display = 'none';
+                    $('#salesTable').DataTable().ajax.reload();
+                } else {
+                    alert('Error updating sale: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the sale');
+            });
+        });
+
+        document.getElementById('editSaleType').addEventListener('change', function() {
+            if (this.value === 'cash') {
+                document.getElementById('editCashFields').style.display = 'block';
+                document.getElementById('editCreditFields').style.display = 'none';
+            } else {
+                document.getElementById('editCashFields').style.display = 'none';
+                document.getElementById('editCreditFields').style.display = 'block';
+            }
+        });
+
+        function signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                fetch('/signout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Failed to sign out. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while signing out. Please try again.');
+                });
+            }
+        }
+
+        function closeEditSaleModal() {
+            document.getElementById('editSaleModal').style.display = 'none';
+        }
+
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('editSaleModal');
+            if (event.target == modal) {
+                closeEditSaleModal();
+            }
+        }
+
+        // Add keydown event listener to close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeEditSaleModal();
+            }
+        });
+    </script>
+
+    <style>
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        
+        /* DataTables styling */
+        #salesTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #salesTable th, #salesTable td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        #salesTable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        #salesTable tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* Edit button styling */
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1002;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        /* Form styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</body>
+</html>

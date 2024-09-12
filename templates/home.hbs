@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Hoe Grocery</title>
+    <link rel="stylesheet" href="/styles/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-content">
+                    <img src="/images/Ellipse13.png" alt="dashboard icon" />
+                    <h1><a href="">Happy Hoe Grocery</a></h1>
+                </div>
+            </div>
+            <div class="sidebar-middle">
+                <div class="sidebar-content">
+                    <img src="/assets/home-variant.svg" alt="home" />
+                    <h2><a href="/">Home</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/shield-check.svg" alt="view sales" />
+                    <h2><a href="/viewSales">View Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/chart-bar.jpg" alt="reports" />
+                    <h2><a href="/reportspage">Reports</a></h2>
+                </div>
+
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div>
+                        <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                        <h2><strong>Current Available Stock</strong></h2>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
+                        {{#if isLoggedIn}}
+                        <p><strong>Welcome, {{userName}}!</strong></p>
+                        <p>Branch: {{userBranch}}</p>
+                        {{else}}
+                        <p><strong>Guest</strong></p>
+                        {{/if}}
+                    </div>
+                    <div class="actions">
+                        {{#if isLoggedIn}}
+                        <button type="button" onclick="signOut()">Sign out</button>
+                        {{else}}
+                        <button type="button"><a href="/login">Sign in</a></button>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+            <div class="projects">
+                <h2>Current Stock</h2>
+                <div class="project-cards">
+                    {{#if productData.length}}
+                    {{#each productData}}
+                    <div class="card">
+                        {{#if this.imageUrl}}
+                        <img src="{{this.imageUrl}}" alt="{{this.name}}">
+                        {{else}}
+                        <img src="/images/default-product.jpg" alt="{{this.name}}">
+                        {{/if}}
+                        <h3>{{this.name}}</h3>
+                        <p>Fresh {{this.name}} Straight from the Garden</p>
+                        <div class="project-icons-container">
+                            <div class="project-icons">
+                                <label for="">{{this.tonnage}} tonnes</label>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                    {{else}}
+                    <p>No products available at the moment.</p>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function signOut() {
+                if (confirm("Are you sure you want to sign out?")) {
+                    fetch('/signout', {
+                        method: 'POST',
+                        credentials: 'same-origin'
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = '/';
+                            } else {
+                                alert('Failed to sign out. Please try again.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while signing out. Please try again.');
+                        });
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

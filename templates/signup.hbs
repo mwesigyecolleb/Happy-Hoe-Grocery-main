@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/styles/login_page.css">
+</head>
+<body>
+    <div class="bgcontainer">
+        <div class="menu">
+            <div class="logo">
+                <img src="/images/Ellipse13.png" width="100px" height="100px" alt="Happy Food Logo">
+            </div>
+        </div>
+        <div class="login-container">
+            <h2>Sign up</h2>
+            <form action="/signup" method="post">
+                <select name="branch" required>
+                    <option value="" disabled selected>Select Branch</option>
+                    <option value="Matugga">Matugga</option>
+                    <option value="Maganjo">Maganjo</option>
+                </select>
+                <select name="role" required>
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="manager">Manager</option>
+                    <option value="agent">Agent</option>
+                </select>
+                <input type="hidden" name="isLoggedIn" value="false">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <div class="submitbtn">
+                    <button type="submit">Sign up</button>
+                </div>
+            </form>
+            <a href="/login">Login</a>
+        </div>
+    </div>
+</body>
+</html>

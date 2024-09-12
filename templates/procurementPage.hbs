@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement System</title>
+    <link rel="stylesheet" href="/styles/procurement.css">
+    <link rel="stylesheet" href="/styles/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-content">
+                    <img src="/images/Ellipse13.png" alt="dashboard icon" />
+                    <h1><a href="">Happy Hoe Grocery</a></h1>
+                </div>
+            </div>
+            <div class="sidebar-middle">
+                <div class="sidebar-content">
+                    <img src="/assets/home-variant.svg" alt="home" />
+                    <h2><a href="/">Home</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/card-account-details-outline.svg" alt="profile" />
+                    <h2><a href="/salesPage">Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/message.svg" alt="messages" />
+                    <h2><a href="/managerDashboard">Manager Dashboard </a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/clock-time-three.svg" alt="history" />
+                    <h2><a href="/procurementPage">Procurement Pages</a></h2>
+                </div>
+                <div class="sidebar-content">
+                    <img src="/assets/shield-check.svg" alt="view sales" />
+                    <h2><a href="/viewSales">View Sales</a></h2>
+                </div>
+                <div class="sidebar-content">
+        <img src="/assets/chart-bar.jpg" alt="reports" />
+        <h2><a href="/reportspage">Reports</a></h2>
+    </div>
+            </div>
+            
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div class="user-greeting">
+                        <div>
+                            <p><strong>Welcome to Happy Hoe Grocery</strong></p>
+                            <h2><strong>Procurement System</strong></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="profile-info">
+                        <img src="/assets/bell-ring-outline.svg" alt="bell notification icon" />
+                        <p><strong>Welcome, {{user.username}}!</strong></p>
+                        <p>Branch: {{user.branch}}</p>
+                        <p>Role: {{user.role}}</p>
+                    </div>
+                    <div class="actions">
+                        <button type="button" onclick="signOut()">Sign out</button>
+                    </div>
+                </div>
+            </div>
+        
+                {{#if (eq user.role 'manager')}}
+                    <div class="form-container">
+                        <h1>PROCUREMENT</h1>
+                        <form action="/procurementPage" method="POST" enctype="multipart/form-data">
+                            <div class="procurement-grid">
+                                <div class="form-group">
+                                    <input class="form-input" type="text" id="produce-name" placeholder="Produce Name" name="produceName" required>
+                                    <input class="form-input" type="text" id="dealers-name" placeholder="Dealer's Name" name="dealerName" pattern="[a-zA-Z0-9]+" required minlength="2">
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-input" type="text" id="TYPE" placeholder="Type of Produce" name="Type" pattern="[A-Za-z\s]+" required minlength="2" title="Please enter only letters and spaces">
+                                    <input class="form-input" type="number" id="COST" placeholder="Cost" name="Cost" required minlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label for="DATE">Date of Procurement:</label>
+                                        <input class="form-input date-time-input" type="date" id="DATE" name="Date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="TIME">Time Procured:</label>
+                                        <input class="form-input date-time-input" type="time" id="TIME" name="Time" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-input" type="text" id="BRANCH-NAME" placeholder="Branch Name" name="BranchName" required readonly>
+                                    <input class="form-input" type="number" id="TONNAGE" placeholder="Tonnage" name="Tonnage" required min="3" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-input" type="tel" id="phone" placeholder="Contact (e.g., 0737245234)" name="phone" minlength="10" pattern="(\+256|0)[0-9]{9}" title="Please enter a valid Ugandan phone number (e.g., +256XXXXXXXXX or 0XXXXXXXXX)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productImage">Product Image:</label>
+                                    <input type="file" id="productImage" name="productImage" accept="image/*">
+                                </div>
+                            <div class="buttons">
+                                <button type="button" class="cancel-btn">CANCEL</button>
+                                <button type="submit" class="save-btn">SAVE</button>
+                            </div>
+                        </form>
+                    </div>
+                {{else}}
+                    <div class="access-denied">
+                        <h2>Access Denied</h2>
+                        <p>You must be a manager to access this page.</p>
+                    </div>
+                {{/if}}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/getUserBranch')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('BRANCH-NAME').value = data.branch;
+                        document.getElementById('BRANCH-NAME').readOnly = true;
+                    } else {
+                        console.error('Error loading branch information:', data.message);
+                        document.getElementById('BRANCH-NAME').placeholder = 'Error loading branch';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('BRANCH-NAME').placeholder = 'Error loading branch';
+                });
+        });
+
+        function signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                fetch('/signout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Failed to sign out. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while signing out. Please try again.');
+                });
+            }
+        }
+    </script>
+
+
+            </div>
+            </body>
+
+</html>
