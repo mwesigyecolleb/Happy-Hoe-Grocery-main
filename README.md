@@ -1,1 +1,1 @@
-# Happy-Hoe-Grocery
+# Happy-Hoe-Grocery was an interesting project 
