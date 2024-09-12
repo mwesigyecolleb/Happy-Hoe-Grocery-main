@@ -1,3 +1,4 @@
+//this is where the routes are stored 
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');

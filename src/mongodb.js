@@ -1,3 +1,4 @@
+//this is where the schemas are created and passed to the database
 const mongoose = require('mongoose')
 
 mongoose.connect('mongodb://localhost:27017/HappyHoeDb')
